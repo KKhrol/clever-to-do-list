@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@api/*": ["src/api/*"],
+      "@components/*": ["src/components/*"],
+      "@constants": ["src/constants/index"],
+      "@modules/*": ["src/modules/*"],
+      "i18n": ["src/i18n"]
+    }
+  }
+}

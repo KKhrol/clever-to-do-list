@@ -1,0 +1,12 @@
+pre-commit:
+  parallel: true
+  commands:
+    lint-staged:
+      run: npx lint-staged
+    types:
+      run: npx tsc --noEmit
+
+commit-msg:
+  commands:
+    lint-commit-message:
+      run: npx commitlint --edit {1}
