@@ -6,11 +6,6 @@ export default {
       'always',
       [
         'feat',
-        'add',
-        'rename',
-        'update',
-        'change',
-        'remove',
         'fix',
         'docs',
         'style',

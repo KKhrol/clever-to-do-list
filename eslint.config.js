@@ -7,14 +7,19 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default [
   { ignores: ['dist', 'node_modules'] },
-  js.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
-  prettier,
+  // Base config for all JavaScript files
+  {
+    files: ['**/*.{js,jsx}'],
+    ...js.configs.recommended,
+    ...prettier,
+  },
+  // TypeScript specific configuration
   {
     files: ['**/*.{ts,tsx}'],
+    ...tseslint.configs.recommendedTypeChecked,
+    ...tseslint.configs.stylisticTypeChecked,
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'module',
@@ -119,4 +124,4 @@ export default tseslint.config(
       ],
     },
   },
-);
+];
