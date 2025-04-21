@@ -13,13 +13,8 @@ export default {
   importOrder: [
     '^@modules/(.*)$',
     '^types/(.*)$',
-    '^@store/(.*)$',
     '^@api/(.*)$',
-    '^@services/(.*)$',
     '^@components/(.*)$',
-    '^@modals/(.*)$',
-    '^@hooks',
-    '^@constants',
     '^[./]',
   ],
   importOrderSeparation: true,
