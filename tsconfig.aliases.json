@@ -6,7 +6,11 @@
       "@components/*": ["src/components/*"],
       "@constants": ["src/constants/index"],
       "@modules/*": ["src/modules/*"],
-      "i18n": ["src/i18n"]
+      "i18n": ["./src/i18n"],
+      "@config/*": ["src/config/*"],
+      "@context/*": ["src/context/*"],
+      "@theme": ["src/theme"],
+      "@hooks/*": ["src/hooks/*"]
     }
   }
 }

@@ -4,22 +4,27 @@ import importPlugin from 'eslint-plugin-import';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default [
-  { ignores: ['dist', 'node_modules'] },
-  // Base config for all JavaScript files
+export default defineConfig([
+  { ignores: ['dist/**', 'node_modules/**'] },
+
+  // JavaScript files
   {
     files: ['**/*.{js,jsx}'],
     ...js.configs.recommended,
-    ...prettier,
+    ...js.configs.recommended,
   },
-  // TypeScript specific configuration
+
+  // TypeScript files
   {
     files: ['**/*.{ts,tsx}'],
-    ...tseslint.configs.recommendedTypeChecked,
-    ...tseslint.configs.stylisticTypeChecked,
+    extends: [
+      tseslint.configs.recommendedTypeChecked,
+      tseslint.configs.stylisticTypeChecked,
+    ],
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'module',
@@ -34,10 +39,10 @@ export default [
       },
     },
     plugins: {
+      '@typescript-eslint': tseslint.plugin,
+      react: react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
-      react,
-      '@typescript-eslint': tseslint.plugin,
       import: importPlugin,
     },
     settings: {
@@ -65,17 +70,14 @@ export default [
       'react/jsx-uses-react': 'off',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': 'off',
 
       // General rules
       'no-console': 'warn',
 
       // Import rules
-      'import/order': 'off',
-      'import/newline-after-import': 'off',
+      'import/order': 'off', // Using Prettier import sort instead
+      'import/newline-after-import': 'off', // Using Prettier instead
       'import/no-extraneous-dependencies': [
         'error',
         {
@@ -96,17 +98,26 @@ export default [
 
       // TypeScript rules
       '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/consistent-type-imports': [
         'error',
         { prefer: 'type-imports' },
       ],
       '@typescript-eslint/no-unused-vars': [
         'warn',
-        { argsIgnorePattern: '^_' },
+        {
+          vars: 'all',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
       ],
       '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-misused-promises': 'off',
+      '@typescript-eslint/array-type': 'off',
 
       // Object property rules
       'object-property-newline': [
@@ -124,4 +135,6 @@ export default [
       ],
     },
   },
-];
+
+  prettier,
+]);

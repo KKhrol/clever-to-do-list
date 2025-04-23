@@ -1,0 +1,12 @@
+{
+  "auth": {
+    "signIn": {
+      "invalidCredentials": "Failed to sign in. Please check your credentials.",
+      "googleSignInFailed": "Failed to sign in with Google."
+    },
+    "signUp": {
+      "createAccountFailed": "Failed to create an account.",
+      "googleSignUpFailed": "Failed to sign up with Google."
+    }
+  }
+}
