@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 
 import Login from '@modules/auth/Login';
 import SignUp from '@modules/auth/SignUp';
+import AuthLayout from '@modules/auth/components/AuthLayout';
 import ErrorPage from '@modules/error';
 
 const publicRoutes = [
@@ -26,7 +27,11 @@ function PublicRouter() {
         <Route
           key={route.path}
           path={route.path}
-          element={<route.element />}
+          element={
+            <AuthLayout>
+              <route.element />
+            </AuthLayout>
+          }
         />
       ))}
       <Route
