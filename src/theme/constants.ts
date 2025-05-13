@@ -5,3 +5,8 @@ export const FontSizes = {
   sm: '14px',
   xs: '12px',
 } as const;
+
+export const ThemeVariants = {
+  LIGHT: 'light',
+  DARK: 'dark',
+} as const;

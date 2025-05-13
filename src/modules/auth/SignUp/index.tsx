@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@context/auth/AuthContext';
+import { useError } from '@context/error/ErrorContext';
 
 import GoogleAuthButton from '@modules/auth/components/GoogleAuthButton';
 
@@ -17,18 +18,17 @@ function SignUp() {
   const navigate = useNavigate();
   const { signUp, signInWithGoogle } = useAuth();
   const { t } = useTranslation(['auth', 'errors', 'common']);
+  const { captureError } = useError();
 
   const {
     values,
     errors: fieldErrors,
     loading,
-    generalError: error,
     handleSubmit,
     handleFieldChange,
     handleFieldFocus,
     handleFieldBlur,
     shouldShowFieldError,
-    setGeneralError: setError,
   } = useHandleForm<IFormValues>({
     initialValues: {
       [FieldNames.EMAIL]: '',
@@ -89,7 +89,6 @@ function SignUp() {
       await signUp(values[FieldNames.EMAIL], values[FieldNames.PASSWORD]);
       navigate('/');
     },
-    onError: () => 'errors:auth.signUp.createAccountFailed', //for toast messages in the future
     validateOnChange: true,
     validateOnBlur: true,
   });
@@ -98,8 +97,10 @@ function SignUp() {
     try {
       await signInWithGoogle();
       navigate('/');
-    } catch (_err) {
-      setError('errors:auth.signUp.googleSignUpFailed');
+    } catch (err) {
+      captureError(err, {
+        componentStack: `Google sign-up error\n${err instanceof Error && err.stack ? err.stack : ''}`,
+      });
     }
   };
 
@@ -117,16 +118,6 @@ function SignUp() {
 
       <Spacer height={26} />
 
-      {error && (
-        <Typography
-          color="error"
-          variant="body2"
-          align="center"
-          sx={{ mb: 2 }}
-        >
-          {t(error)}
-        </Typography>
-      )}
       <SignUpForm
         values={values}
         loading={loading}

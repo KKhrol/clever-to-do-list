@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react';
 
+import { useError } from '@context/error/ErrorContext';
+
 interface ValidationRule<TValue, TFormValues = Record<string, unknown>> {
   validate: (value: TValue, formValues: TFormValues) => boolean;
   errorMessage: string;
@@ -13,7 +15,8 @@ interface UseFormConfig<T> {
   initialValues: T;
   validationRules: FieldValidation<T>;
   onSubmit: (values: T) => Promise<void>;
-  onError?: (error: string) => void;
+  onError?: () => void;
+  submitErrorMessage?: string;
   validateOnBlur?: boolean;
   validateOnChange?: boolean;
 }
@@ -23,9 +26,12 @@ function useHandleForm<T extends object>({
   validationRules,
   onSubmit,
   onError,
+  submitErrorMessage,
   validateOnBlur = false,
   validateOnChange = false,
 }: UseFormConfig<T>) {
+  const { captureError } = useError();
+
   const [values, setValues] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
   const [touchedFields, setTouchedFields] = useState<
@@ -35,7 +41,6 @@ function useHandleForm<T extends object>({
     Partial<Record<keyof T, boolean>>
   >({});
   const [loading, setLoading] = useState(false);
-  const [generalError, setGeneralError] = useState('');
 
   const validateFields = useCallback(
     (fieldName?: keyof T, newValue?: T[keyof T]): boolean => {
@@ -96,7 +101,6 @@ function useHandleForm<T extends object>({
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      setGeneralError('');
 
       if (!validateFields()) {
         return;
@@ -106,15 +110,23 @@ function useHandleForm<T extends object>({
       try {
         await onSubmit(values);
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'An error occurred';
-        setGeneralError(errorMessage);
-        onError?.(errorMessage);
+        captureError(submitErrorMessage || err, {
+          componentStack: `Form submission error\n${err instanceof Error && err.stack ? err.stack : ''}`,
+        });
+
+        onError?.();
       } finally {
         setLoading(false);
       }
     },
-    [onSubmit, validateFields, onError, values],
+    [
+      onSubmit,
+      validateFields,
+      onError,
+      values,
+      captureError,
+      submitErrorMessage,
+    ],
   );
 
   const handleFieldChange = useCallback(
@@ -169,12 +181,10 @@ function useHandleForm<T extends object>({
     values,
     errors,
     loading,
-    generalError,
     handleSubmit,
     handleFieldChange,
     handleFieldFocus,
     handleFieldBlur,
-    setGeneralError,
     shouldShowFieldError,
   };
 }

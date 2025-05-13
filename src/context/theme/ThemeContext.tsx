@@ -2,6 +2,7 @@ import type { PaletteMode } from '@mui/material';
 import { ThemeProvider } from '@mui/material';
 import { createAppTheme } from '@theme';
 import { createContext, useContext, useMemo, useState } from 'react';
+import { ThemeVariants } from 'src/theme/constants';
 
 interface ThemeContextType {
   mode: PaletteMode;
@@ -21,7 +22,11 @@ export const ThemeProviderWrapper = ({
     () => ({
       mode,
       toggleColorMode: () => {
-        setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
+        setMode(prevMode =>
+          prevMode === ThemeVariants.LIGHT
+            ? ThemeVariants.DARK
+            : ThemeVariants.LIGHT,
+        );
       },
     }),
     [mode],

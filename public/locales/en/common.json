@@ -1,3 +1,13 @@
 {
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "header": {
+    "title": "Clever To-Do List"
+  },
+  "errors": {
+    "notFound": {
+      "title": "404 - Page Not Found",
+      "message": "The page you are looking for does not exist.",
+      "button": "Go to Home"
+    }
+  }
 }

@@ -1,12 +1,13 @@
 {
   "auth": {
-    "signIn": {
-      "invalidCredentials": "Failed to sign in. Please check your credentials.",
-      "googleSignInFailed": "Failed to sign in with Google."
-    },
-    "signUp": {
-      "createAccountFailed": "Failed to create an account.",
-      "googleSignUpFailed": "Failed to sign up with Google."
+    "firebase": {
+      "INVALID_EMAIL": "The email address is invalid.",
+      "INVALID_CREDENTIAL": "Failed to sign in. Please check your credentials.",
+      "POPUP_CLOSED_BY_USER": "Authentication failed. Please try again.",
+      "EMAIL_ALREADY_IN_USE": "Account with such email already exists. Please sign in or use a different email.",
+      "USER_DISABLED": "Access denied. Please contact support.",
+      "default": "An unknown error occurred. Please try again."
     }
-  }
+  },
+  "unknown": "Something went wrong. Please try again."
 }

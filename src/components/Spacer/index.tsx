@@ -1,28 +1,8 @@
-import { Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import React from 'react';
 
-interface SpacerProps {
-  size?: number;
-  axis?: 'horizontal' | 'vertical';
-  flex?: boolean;
-  height?: number | string;
-}
+import type { SpacerProps } from './Spacer.styled';
+import { SpacerComponent } from './Spacer.styled';
 
-const Spacer = styled(Box)<SpacerProps>(
-  ({ theme, size = 1, axis = 'vertical', flex, height }) => ({
-    ...(axis === 'horizontal'
-      ? {
-          width: theme.spacing(size),
-          height: 1,
-        }
-      : {
-          width: 1,
-          height: height || theme.spacing(size),
-        }),
-    ...(flex && {
-      flex: 1,
-    }),
-  }),
-);
+const Spacer: React.FC<SpacerProps> = props => <SpacerComponent {...props} />;
 
 export default Spacer;

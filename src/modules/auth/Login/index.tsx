@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@context/auth/AuthContext';
+import { useError } from '@context/error/ErrorContext.tsx';
 
 import Spacer from '@components/Spacer';
 
@@ -17,17 +18,16 @@ function Login() {
   const navigate = useNavigate();
   const { signIn, signInWithGoogle } = useAuth();
   const { t } = useTranslation(['auth', 'errors']);
+  const { captureError } = useError();
   const {
     values,
     errors: fieldErrors,
     loading,
-    generalError: error,
     shouldShowFieldError,
     handleFieldBlur,
     handleSubmit,
     handleFieldChange,
     handleFieldFocus,
-    setGeneralError: setError,
   } = useHandleForm<IFormValues>({
     initialValues: {
       [FieldNames.EMAIL]: '',
@@ -51,15 +51,16 @@ function Login() {
       await signIn(values[FieldNames.EMAIL], values[FieldNames.PASSWORD]);
       navigate('/');
     },
-    onError: () => 'errors:auth.signIn.invalidCredentials', //for toast messages in the future
   });
 
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
       navigate('/');
-    } catch (_err) {
-      setError('errors:auth.signIn.googleSignInFailed');
+    } catch (err) {
+      captureError(err, {
+        componentStack: `Google sign-in error\n${err instanceof Error && err.stack ? err.stack : ''}`,
+      });
     }
   };
 
@@ -76,17 +77,6 @@ function Login() {
       </Typography>
 
       <Spacer height={26} />
-
-      {error && (
-        <Typography
-          color="error"
-          variant="body2"
-          align="center"
-          sx={{ mb: 2 }}
-        >
-          {t(error)}
-        </Typography>
-      )}
 
       <LoginForm
         values={values}

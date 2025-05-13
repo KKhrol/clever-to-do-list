@@ -1,29 +1,12 @@
-import { Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import React from 'react';
 
-interface LayoutContainerProps extends React.HTMLAttributes<HTMLDivElement> {
-  $alignItems?: React.CSSProperties['alignItems'];
-  $flexDirection?: React.CSSProperties['flexDirection'];
-  $width?: React.CSSProperties['width'];
-  $overflow?: React.CSSProperties['overflow'];
-}
+import type { LayoutContainerProps } from './LayoutContainer.styled';
+import { LayoutContainerWrapper } from './LayoutContainer.styled';
 
-const LayoutContainer = styled(Box)<LayoutContainerProps>(
-  ({
-    theme,
-    $alignItems = 'center',
-    $flexDirection = 'column',
-    $width = '100%',
-    $overflow = 'hidden',
-  }) => ({
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: $flexDirection,
-    alignItems: $alignItems,
-    width: $width,
-    backgroundColor: theme.palette.background.paper,
-    overflow: $overflow,
-  }),
+const LayoutContainer: React.FC<
+  React.PropsWithChildren<LayoutContainerProps>
+> = props => (
+  <LayoutContainerWrapper {...props}>{props.children}</LayoutContainerWrapper>
 );
 
 export default LayoutContainer;

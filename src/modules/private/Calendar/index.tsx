@@ -5,7 +5,7 @@ function Calendar() {
         justifyContent: 'center',
         alignItems: 'center',
         display: 'flex',
-        height: '100vh',
+        height: '100%',
       }}
     >
       <h1>Calendar</h1>

@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Login from '@modules/auth/Login';
 import SignUp from '@modules/auth/SignUp';
 import AuthLayout from '@modules/auth/components/AuthLayout';
-import ErrorPage from '@modules/error';
+import NotFoundErrorPage from '@modules/error/NotFoundErrorPage';
 
 const publicRoutes = [
   {
@@ -16,7 +16,7 @@ const publicRoutes = [
   },
   {
     path: '/unauthorized',
-    element: ErrorPage,
+    element: NotFoundErrorPage,
   },
 ];
 
