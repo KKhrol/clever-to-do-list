@@ -9,12 +9,19 @@ export default {
   endOfLine: 'auto',
   singleAttributePerLine: true,
   jsxBracketSameLine: false,
+  bracketSameLine: false,
+  bracketSpacing: true,
+
+  proseWrap: 'preserve',
 
   importOrder: [
+    '^@context/(.*)$',
+    '^@config/(.*)$',
     '^@modules/(.*)$',
     '^types/(.*)$',
     '^@api/(.*)$',
     '^@components/(.*)$',
+    '^@hooks/(.*)$',
     '^[./]',
   ],
   importOrderSeparation: true,
