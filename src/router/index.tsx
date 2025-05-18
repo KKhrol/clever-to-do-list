@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import Header from '@components/Header';
 import Loader from '@components/Loader';
 
 import PrivateRouter from './PrivateRouter';
@@ -20,7 +19,6 @@ export const AppRouter = () => (
           path="*"
           element={
             <RequireAuth>
-              <Header />
               <PrivateRouter />
             </RequireAuth>
           }

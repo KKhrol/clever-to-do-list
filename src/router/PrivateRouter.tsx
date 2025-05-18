@@ -1,8 +1,9 @@
 import { Route, Routes } from 'react-router-dom';
 
-import ErrorPage from '@modules/error';
+import NotFoundErrorPage from '@modules/error/NotFoundErrorPage';
 import Calendar from '@modules/private/Calendar';
 import Home from '@modules/private/Home';
+import PrivateLayout from '@modules/private/components/PrivateLayout';
 
 const privateRoutes = [
   {
@@ -15,7 +16,7 @@ const privateRoutes = [
   },
   {
     path: '*',
-    element: ErrorPage,
+    element: NotFoundErrorPage,
   },
 ];
 
@@ -26,9 +27,13 @@ function PrivateRouter() {
         <Route
           key={route.path}
           path={route.path}
-          element={<route.element />}
+          element={
+            <PrivateLayout>
+              <route.element />
+            </PrivateLayout>
+          }
         />
-      ))}{' '}
+      ))}
     </Routes>
   );
 }
