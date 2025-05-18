@@ -9,5 +9,17 @@
       "default": "An unknown error occurred. Please try again."
     }
   },
-  "unknown": "Something went wrong. Please try again."
+  "unknown": "Something went wrong. Please try again.",
+  "taskModal": {
+    "addTask": "Failed to add task. Please try again.",
+    "errors": {
+      "titleRequired": "Task title is required.",
+      "startDateRequired": "Task start date is required.",
+      "startTimeRequired": "Task start time is required.",
+      "endDateRequired": "Task end date is required.",
+      "endTimeRequired": "Task end time is required.",
+      "endTimeMustBeAfterStartTime": "End time must be after start time.",
+      "startDateMustBeBeforeEndDate": "Start date must be before end date."
+    }
+  }
 }

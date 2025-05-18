@@ -7,7 +7,7 @@ interface ValidationRule<TValue, TFormValues = Record<string, unknown>> {
   errorMessage: string;
 }
 
-type FieldValidation<T> = {
+export type FieldValidation<T> = {
   [K in keyof T]?: ValidationRule<T[K], T>[];
 };
 
@@ -44,6 +44,16 @@ function useHandleForm<T extends object>({
 
   const validateFields = useCallback(
     (fieldName?: keyof T, newValue?: T[keyof T]): boolean => {
+      if (!fieldName) {
+        const allFieldsTouched = Object.keys(validationRules).reduce(
+          (acc, field) => ({
+            ...acc,
+            [field]: true,
+          }),
+          {} as Record<keyof T, boolean>,
+        );
+        setTouchedFields(allFieldsTouched);
+      }
       const newErrors: Partial<Record<keyof T, string>> = {};
       let isValid = true;
 
@@ -177,6 +187,14 @@ function useHandleForm<T extends object>({
     [errors, touchedFields, focusedFields],
   );
 
+  const resetForm = useCallback((newValues: T) => {
+    setValues(newValues);
+    setErrors({});
+    setTouchedFields({});
+    setLoading(false);
+    setFocusedFields({});
+  }, []);
+
   return {
     values,
     errors,
@@ -186,6 +204,7 @@ function useHandleForm<T extends object>({
     handleFieldFocus,
     handleFieldBlur,
     shouldShowFieldError,
+    resetForm,
   };
 }
 

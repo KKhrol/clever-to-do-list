@@ -1,16 +1,23 @@
-export const Loader = () => {
+import React from 'react';
+
+import { LoaderContainer, Spinner } from './Loader.styled';
+
+interface LoaderProps {
+  size?: 'small' | 'medium' | 'large';
+  className?: string;
+}
+
+export const Loader: React.FC<LoaderProps> = ({
+  size = 'medium',
+  className,
+}) => {
   return (
-    <div
-      style={{
-        alignItems: 'center',
-        display: 'flex',
-        height: '100vh',
-        justifyContent: 'center',
-        width: '100vw',
-      }}
+    <LoaderContainer
+      size={size}
+      className={className}
     >
-      Loading...
-    </div>
+      <Spinner />
+    </LoaderContainer>
   );
 };
 
