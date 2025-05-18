@@ -3,33 +3,50 @@ import HomeIcon from '@mui/icons-material/Home';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { MainTabValues } from 'src/constants/mainTabValues';
 
 const menuItems = [
-  { label: 'Home', path: '/', icon: <HomeIcon sx={{ fontSize: 24 }} /> },
+  {
+    label: 'Home',
+    path: `/${MainTabValues.HOME}`,
+    value: MainTabValues.HOME,
+    icon: <HomeIcon sx={{ fontSize: 24 }} />,
+  },
   {
     label: 'Calendar',
-    path: '/calendar',
+    path: `/${MainTabValues.CALENDAR}`,
+    value: MainTabValues.CALENDAR,
     icon: <CalendarTodayIcon sx={{ fontSize: 20 }} />,
   },
 ];
 
 const MenuTabs: React.FC = () => {
+  const { tab } = useParams<{ tab: string }>();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const currentTab = menuItems.findIndex(item =>
-    item.path === '/'
-      ? location.pathname === '/'
-      : location.pathname.startsWith(item.path),
-  );
+  const getCurrentTabIndex = () => {
+    if (tab) {
+      const index = menuItems.findIndex(item => item.value === tab);
+      if (index !== -1) return index;
+    }
+
+    return menuItems.findIndex(item =>
+      item.path === '/'
+        ? location.pathname === '/'
+        : location.pathname.startsWith(item.path),
+    );
+  };
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     navigate(menuItems[newValue].path);
   };
 
+  const currentTabIndex = getCurrentTabIndex();
+
   return (
     <Tabs
-      value={currentTab === -1 ? 0 : currentTab}
+      value={currentTabIndex === -1 ? 0 : currentTabIndex}
       onChange={handleChange}
       indicatorColor="primary"
       textColor="primary"

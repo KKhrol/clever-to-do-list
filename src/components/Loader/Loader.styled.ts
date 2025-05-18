@@ -35,3 +35,11 @@ export const Spinner = styled('div')(({ theme }) => ({
   borderRadius: '50%',
   animation: `${spin} 1s linear infinite`,
 }));
+
+export const LoaderWrapper = styled('div')(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: '100vh',
+  width: '100%',
+}));
