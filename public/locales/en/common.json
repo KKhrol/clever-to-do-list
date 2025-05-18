@@ -9,5 +9,30 @@
       "message": "The page you are looking for does not exist.",
       "button": "Go to Home"
     }
+  },
+  "calendarPage": {
+    "title": "Calendar"
+  },
+  "homePage": {
+    "title": "Home",
+    "addNewTask": "Add New Task",
+    "completedTasks": "Done / Total"
+  },
+  "taskModal": {
+    "addTaskTitle": "Add New Task",
+    "updateTaskTitle": "Update Task",
+    "form": {
+      "title": "Title",
+      "description": "Description",
+      "startDateTime": "Start Date & Time",
+      "endDateTime": "End Date & Time",
+      "priority": "Priority",
+      "color": "Color"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "addTask": "Add Task",
+      "updateTask": "Update Task"
+    }
   }
 }

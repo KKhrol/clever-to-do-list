@@ -1,4 +1,7 @@
+import type { TaskPriority } from 'src/constants/taskPriority.enum';
+
 export const FontSizes = {
+  xxl: '32px',
   xl: '28px',
   lg: '24px',
   md: '16px',
@@ -9,4 +12,10 @@ export const FontSizes = {
 export const ThemeVariants = {
   LIGHT: 'light',
   DARK: 'dark',
+} as const;
+
+export const PriorityColors: Record<TaskPriority, string> = {
+  low: '#FFD600',
+  medium: '#FF9800',
+  high: '#F44336',
 } as const;
