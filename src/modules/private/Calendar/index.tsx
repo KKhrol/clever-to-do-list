@@ -1,8 +1,10 @@
 import { formatDateToYYYYMMDD } from '@utils/date-formatters';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CalendarProvider } from '@context/calendar/CalendarContext';
+import { CalendarRefreshProvider } from '@context/calendar/CalendarRefreshContext';
 
 import Spacer from '@components/Spacer';
 import StyledTitle from '@components/StyledTitle';
@@ -20,7 +22,6 @@ const gap = 30;
 
 export const Calendar = () => {
   const { t } = useTranslation(['common']);
-
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -30,26 +31,28 @@ export const Calendar = () => {
   }, []);
 
   const itemSize = Math.floor(windowWidth / VisibleDaysCount);
-  const today = formatDateToYYYYMMDD(new Date());
+  const today = formatDateToYYYYMMDD(moment().toDate());
 
   return (
-    <CalendarProvider initialDate={today}>
-      <CalendarContainer paddingHorizontal={PaddingHorizontal}>
-        <StyledTitle>{t('calendarPage.title')}</StyledTitle>
-        <Spacer height={20} />
-        <CalendarDates
-          initialDate={today}
-          DateItemComponent={
-            CalendarPageDateItem as React.ComponentType<IDateItemProps>
-          }
-          height={160}
-          itemSize={itemSize}
-          width={windowWidth - PaddingHorizontal * 2}
-          gap={gap}
-        />
-        <TasksTimeline />
-      </CalendarContainer>
-    </CalendarProvider>
+    <CalendarRefreshProvider>
+      <CalendarProvider initialDate={today}>
+        <CalendarContainer paddingHorizontal={PaddingHorizontal}>
+          <StyledTitle>{t('calendarPage.title')}</StyledTitle>
+          <Spacer height={20} />
+          <CalendarDates
+            initialDate={today}
+            DateItemComponent={
+              CalendarPageDateItem as React.ComponentType<IDateItemProps>
+            }
+            height={160}
+            itemSize={itemSize}
+            width={windowWidth - PaddingHorizontal * 2}
+            gap={gap}
+          />
+          <TasksTimeline />
+        </CalendarContainer>
+      </CalendarProvider>
+    </CalendarRefreshProvider>
   );
 };
 

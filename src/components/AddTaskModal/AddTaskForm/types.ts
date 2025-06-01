@@ -1,4 +1,5 @@
 import { formatDateToYYYYMMDD, formatTimeToHHMM } from '@utils/date-formatters';
+import moment from 'moment';
 import { TaskPriority } from 'src/constants/taskPriority.enum';
 
 import type { CreateTask } from '@api/tasks/dto';
@@ -39,16 +40,16 @@ export interface IErrorData {
 }
 
 export const getDefaultTask = (): CreateTask => {
-  const now = new Date();
-  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+  const now = moment();
+  const oneHourLater = moment(now).add(1, 'hour');
 
   return {
     title: '',
     description: '',
-    startDate: formatDateToYYYYMMDD(now),
-    startTime: formatTimeToHHMM(now),
-    endDate: formatDateToYYYYMMDD(oneHourLater),
-    endTime: formatTimeToHHMM(oneHourLater),
+    startDate: formatDateToYYYYMMDD(now.toDate()),
+    startTime: formatTimeToHHMM(now.toDate()),
+    endDate: formatDateToYYYYMMDD(oneHourLater.toDate()),
+    endTime: formatTimeToHHMM(oneHourLater.toDate()),
     priority: TaskPriority.MEDIUM,
     color: '#3498db',
   };
@@ -81,18 +82,18 @@ const validateDateTimeOrder = (allValues: IFormValues): boolean => {
   }
 
   try {
-    const startDateTime = new Date(
+    const startDateTime = moment(
       `${allValues[FieldNames.START_DATE]}T${allValues[FieldNames.START_TIME]}`,
     );
-    const endDateTime = new Date(
+    const endDateTime = moment(
       `${allValues[FieldNames.END_DATE]}T${allValues[FieldNames.END_TIME]}`,
     );
 
-    if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+    if (!startDateTime.isValid() || !endDateTime.isValid()) {
       return false;
     }
 
-    return endDateTime > startDateTime;
+    return endDateTime.isAfter(startDateTime);
   } catch {
     return false;
   }

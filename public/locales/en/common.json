@@ -11,12 +11,21 @@
     }
   },
   "calendarPage": {
-    "title": "Calendar"
+    "title": "Calendar",
+    "tasksFor": "Tasks for {{date}}"
   },
   "homePage": {
     "title": "Home",
     "addNewTask": "Add New Task",
-    "completedTasks": "Done / Total"
+    "completedTasks": "Done / Total",
+    "tasksList": {
+      "tasks": "Tasks",
+      "tasksToday": "Tasks today",
+      "loadingTasks": "Loading tasks",
+      "noTasksToday": "No Tasks for Today",
+      "noTasksForSelectedDate": "No Tasks for Selected date",
+      "for": "for"
+    }
   },
   "taskModal": {
     "addTaskTitle": "Add New Task",
