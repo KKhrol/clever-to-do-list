@@ -1,0 +1,2 @@
+export const CALENDAR_PAGE_SIZE = 30;
+export const CALENDAR_FETCH_THRESHOLD = 10;

@@ -172,6 +172,24 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           },
         },
       },
+      variants: [
+        {
+          props: { type: 'date' },
+          style: {
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+            },
+          },
+        },
+        {
+          props: { type: 'time' },
+          style: {
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+            },
+          },
+        },
+      ],
     },
     MuiLink: {
       styleOverrides: {

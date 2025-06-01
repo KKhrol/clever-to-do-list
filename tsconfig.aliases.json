@@ -10,7 +10,8 @@
       "@config/*": ["src/config/*"],
       "@context/*": ["src/context/*"],
       "@theme": ["src/theme"],
-      "@hooks/*": ["src/hooks/*"]
+      "@hooks/*": ["src/hooks/*"],
+      "@utils/*": ["src/utils/*"]
     }
   }
 }
