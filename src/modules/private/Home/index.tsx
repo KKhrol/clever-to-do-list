@@ -5,10 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@context/auth/AuthContext';
 import { CalendarProvider } from '@context/calendar/CalendarContext';
-import {
-  CalendarRefreshProvider,
-  useCalendarRefresh,
-} from '@context/calendar/CalendarRefreshContext';
+import { useCalendarRefresh } from '@context/calendar/CalendarRefreshContext';
 
 import { addUserTask } from '@api/tasks';
 import type { CreateTask } from '@api/tasks/dto';
@@ -56,35 +53,33 @@ const Home = () => {
   );
 
   return (
-    <CalendarRefreshProvider>
-      <CalendarProvider initialDate={today}>
-        <HomeContainer paddingHorizontal={PaddingHorizontal}>
-          <HeaderContainer>
-            <TitleWrapper>
-              <StyledTitle>{t('homePage.title')}</StyledTitle>
-            </TitleWrapper>
-            <AddTaskButton onClick={() => setModalOpen(true)} />
-          </HeaderContainer>
-          <CalendarDates
-            initialDate={today}
-            DateItemComponent={
-              HomePageDateItem as React.ComponentType<IDateItemProps>
-            }
-            height={160}
-            itemSize={itemSize}
-            width={windowWidth - PaddingHorizontal * 2}
-            gap={gap}
-          />
-          <TasksList />
-          <AddTaskModal
-            open={modalOpen}
-            onClose={() => setModalOpen(false)}
-            onSubmit={handleAddTask}
-            mode="add"
-          />
-        </HomeContainer>
-      </CalendarProvider>
-    </CalendarRefreshProvider>
+    <CalendarProvider initialDate={today}>
+      <HomeContainer paddingHorizontal={PaddingHorizontal}>
+        <HeaderContainer>
+          <TitleWrapper>
+            <StyledTitle>{t('homePage.title')}</StyledTitle>
+          </TitleWrapper>
+          <AddTaskButton onClick={() => setModalOpen(true)} />
+        </HeaderContainer>
+        <CalendarDates
+          initialDate={today}
+          DateItemComponent={
+            HomePageDateItem as React.ComponentType<IDateItemProps>
+          }
+          height={160}
+          itemSize={itemSize}
+          width={windowWidth - PaddingHorizontal * 2}
+          gap={gap}
+        />
+        <TasksList />
+        <AddTaskModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onSubmit={handleAddTask}
+          mode="add"
+        />
+      </HomeContainer>
+    </CalendarProvider>
   );
 };
 

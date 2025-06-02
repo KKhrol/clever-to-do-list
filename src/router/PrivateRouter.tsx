@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { MainTabValues } from 'src/constants/mainTabValues';
 
+import { CalendarRefreshProvider } from '@context/calendar/CalendarRefreshContext';
+
 import NotFoundErrorPage from '@modules/error/NotFoundErrorPage';
 import Calendar from '@modules/private/Calendar';
 import Home from '@modules/private/Home';
@@ -12,10 +14,12 @@ const TabContent = () => {
   switch (tab) {
     case MainTabValues.CALENDAR:
       return <Calendar />;
-    case MainTabValues.HOME:
-      return <Home />;
     default:
-      return <Home />;
+      return (
+        <CalendarRefreshProvider>
+          <Home />
+        </CalendarRefreshProvider>
+      );
   }
 };
 const privateRoutes = [
