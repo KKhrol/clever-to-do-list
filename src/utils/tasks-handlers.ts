@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import type { ITask } from '@api/tasks/dto';
 
 import { formatDateToYYYYMMDD } from './date-formatters';
@@ -8,8 +10,8 @@ export const splitTasksByDate = (tasks: ITask[]): Record<string, ITask[]> => {
       let startDate, endDate;
 
       try {
-        startDate = formatDateToYYYYMMDD(new Date(task.startDate));
-        endDate = formatDateToYYYYMMDD(new Date(task.endDate));
+        startDate = formatDateToYYYYMMDD(moment(task.startDate).toDate());
+        endDate = formatDateToYYYYMMDD(moment(task.endDate).toDate());
       } catch {
         return acc;
       }
@@ -41,18 +43,18 @@ const getDatesBetween = (
       return dates;
     }
 
-    const startDate = new Date(startDateStr);
-    const endDate = new Date(endDateStr);
+    const startDate = moment(startDateStr);
+    const endDate = moment(endDateStr);
 
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    if (!startDate.isValid() || !endDate.isValid()) {
       return dates;
     }
 
-    const currentDate = new Date(startDate);
+    const currentDate = moment(startDate);
 
-    while (currentDate <= endDate) {
-      dates.push(formatDateToYYYYMMDD(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
+    while (currentDate.isSameOrBefore(endDate, 'day')) {
+      dates.push(formatDateToYYYYMMDD(currentDate.toDate()));
+      currentDate.add(1, 'days');
     }
 
     return dates;

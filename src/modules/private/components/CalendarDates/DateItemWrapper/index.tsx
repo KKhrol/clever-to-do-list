@@ -1,4 +1,5 @@
 import { formatDateToYYYYMMDD } from '@utils/date-formatters';
+import moment from 'moment';
 import React from 'react';
 
 import type { DateTasksState } from '@context/calendar/CalendarContext';
@@ -29,7 +30,7 @@ const DateItemWrapper: React.FC<Props> = ({
   today,
 }) => {
   const date = dates[index];
-  const dateKey = formatDateToYYYYMMDD(new Date(date));
+  const dateKey = formatDateToYYYYMMDD(moment(date).toDate());
   const { tasks, loading } = dateTasks[dateKey] || {};
   const { selectedDate, requestSelectDate, pendingSelectedDate } =
     useCalendarContext();

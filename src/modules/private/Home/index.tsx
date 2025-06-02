@@ -1,9 +1,11 @@
 import { formatDateToYYYYMMDD } from '@utils/date-formatters';
+import moment from 'moment';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@context/auth/AuthContext';
 import { CalendarProvider } from '@context/calendar/CalendarContext';
+import { useCalendarRefresh } from '@context/calendar/CalendarRefreshContext';
 
 import { addUserTask } from '@api/tasks';
 import type { CreateTask } from '@api/tasks/dto';
@@ -16,6 +18,7 @@ import type { IDateItemProps } from '../components/CalendarDates/types';
 import { HeaderContainer, HomeContainer, TitleWrapper } from './Home.styled';
 import AddTaskButton from './components/AddTaskButton';
 import HomePageDateItem from './components/HomePageDateItem';
+import TasksList from './components/TasksList';
 
 const VisibleDaysCount = 8;
 const PaddingHorizontal = 40;
@@ -25,6 +28,7 @@ const Home = () => {
   const { t } = useTranslation(['common']);
   const [modalOpen, setModalOpen] = useState(false);
   const { user } = useAuth();
+  const { triggerRefresh } = useCalendarRefresh();
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -35,7 +39,7 @@ const Home = () => {
   }, []);
 
   const itemSize = Math.floor(windowWidth / VisibleDaysCount);
-  const today = formatDateToYYYYMMDD(new Date());
+  const today = formatDateToYYYYMMDD(moment().toDate());
 
   const handleAddTask = useCallback(
     async (task: CreateTask) => {
@@ -43,8 +47,9 @@ const Home = () => {
       await addUserTask(user.uid, {
         ...task,
       });
+      triggerRefresh();
     },
-    [user],
+    [user, triggerRefresh],
   );
 
   return (
@@ -66,6 +71,7 @@ const Home = () => {
           width={windowWidth - PaddingHorizontal * 2}
           gap={gap}
         />
+        <TasksList />
         <AddTaskModal
           open={modalOpen}
           onClose={() => setModalOpen(false)}

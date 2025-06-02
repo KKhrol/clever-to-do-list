@@ -62,7 +62,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
 
   useEffect(() => {
     if (open) {
-      resetForm(mode === 'add' ? defaultTask : actualInitialValues);
+      resetForm(actualInitialValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, mode]);
