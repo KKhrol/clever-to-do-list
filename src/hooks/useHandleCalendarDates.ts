@@ -4,6 +4,7 @@ import {
   getDateRange,
 } from '@utils/date-formatters';
 import { splitTasksByDate } from '@utils/tasks-handlers';
+import moment from 'moment';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type {
   FixedSizeList,
@@ -17,6 +18,7 @@ import {
 
 import { useAuth } from '@context/auth/AuthContext';
 import { useCalendarContext } from '@context/calendar/CalendarContext';
+import { useCalendarRefresh } from '@context/calendar/CalendarRefreshContext';
 
 import { getUserTasksByPeriod } from '@api/tasks';
 import type { ITask } from '@api/tasks/dto';
@@ -30,9 +32,14 @@ export const useHandleCalendarDates = (initialDate?: string) => {
   const user = useAuth();
   const userId = user?.user?.uid ?? '';
   const listRef = useRef<FixedSizeList>(null);
-  const { pendingSelectedDate, setSelectedDateData } = useCalendarContext();
+  const { pendingSelectedDate, setSelectedDateData, selectedDate } =
+    useCalendarContext();
+  const { refreshTrigger } = useCalendarRefresh();
+
+  const prevRefreshTriggerRef = useRef<number>(refreshTrigger);
+
   const today = useMemo(
-    () => initialDate || formatDateToYYYYMMDD(new Date()),
+    () => initialDate || formatDateToYYYYMMDD(moment().toDate()),
     [initialDate],
   );
 
@@ -40,13 +47,32 @@ export const useHandleCalendarDates = (initialDate?: string) => {
 
   const [dates, setDates] = useState<string[]>(() => [
     ...getDateRange(
-      formatDateToYYYYMMDD(addDays(new Date(today), -CALENDAR_PAGE_SIZE)),
+      formatDateToYYYYMMDD(
+        addDays(moment(today).toDate(), -CALENDAR_PAGE_SIZE),
+      ),
       CALENDAR_PAGE_SIZE,
     ),
     ...getDateRange(today, CALENDAR_PAGE_SIZE),
   ]);
 
   const [dateTasks, setDateTasks] = useState<DateTasksState>({});
+
+  const updateContextWithDateData = useCallback(
+    (dateKey: string) => {
+      if (!dateKey) return;
+
+      const dateData = dateTasks[dateKey];
+      if (!dateData) return;
+
+      setSelectedDateData({
+        date: dateKey,
+        tasks: dateData.tasks || [],
+        loading: dateData.loading,
+        loaded: dateData.loaded,
+      });
+    },
+    [dateTasks, setSelectedDateData],
+  );
 
   const fetchTasksForDates = useCallback(
     async (datesToFetch: string[]) => {
@@ -65,12 +91,15 @@ export const useHandleCalendarDates = (initialDate?: string) => {
         return updated;
       });
 
+      if (pendingSelectedDate && datesToLoad.includes(pendingSelectedDate)) {
+        updateContextWithDateData(pendingSelectedDate);
+      }
+
       try {
         const startDate = datesToLoad[0];
         const endDate = datesToLoad[datesToLoad.length - 1];
 
         const tasks = await getUserTasksByPeriod(userId, startDate, endDate);
-
         const tasksByDate = splitTasksByDate(tasks);
 
         setDateTasks(prev => {
@@ -84,7 +113,25 @@ export const useHandleCalendarDates = (initialDate?: string) => {
           });
           return updated;
         });
-      } catch {
+
+        if (pendingSelectedDate && datesToLoad.includes(pendingSelectedDate)) {
+          setSelectedDateData({
+            date: pendingSelectedDate,
+            tasks: tasksByDate[pendingSelectedDate] || [],
+            loading: false,
+            loaded: true,
+          });
+        }
+
+        if (selectedDate && datesToLoad.includes(selectedDate)) {
+          setSelectedDateData({
+            date: selectedDate,
+            tasks: tasksByDate[selectedDate] || [],
+            loading: false,
+            loaded: true,
+          });
+        }
+      } catch (_error) {
         setDateTasks(prev => {
           const updated = { ...prev };
           datesToLoad.forEach(dateKey => {
@@ -92,10 +139,92 @@ export const useHandleCalendarDates = (initialDate?: string) => {
           });
           return updated;
         });
+
+        if (pendingSelectedDate && datesToLoad.includes(pendingSelectedDate)) {
+          setSelectedDateData({
+            date: pendingSelectedDate,
+            tasks: [],
+            loading: false,
+            loaded: true,
+          });
+        }
       }
     },
-    [userId, dateTasks],
+    [
+      userId,
+      dateTasks,
+      pendingSelectedDate,
+      selectedDate,
+      setSelectedDateData,
+      updateContextWithDateData,
+    ],
   );
+
+  const refreshAllLoadedDates = useCallback(async () => {
+    const loadedDates = Object.keys(dateTasks).filter(
+      date => dateTasks[date]?.loaded,
+    );
+
+    if (loadedDates.length === 0) return;
+
+    try {
+      loadedDates.sort();
+      const startDate = loadedDates[0];
+      const endDate = loadedDates[loadedDates.length - 1];
+
+      const tasks = await getUserTasksByPeriod(userId, startDate, endDate);
+      const tasksByDate = splitTasksByDate(tasks);
+
+      setDateTasks(prev => {
+        const updated = { ...prev };
+        loadedDates.forEach(dateKey => {
+          updated[dateKey] = {
+            tasks: tasksByDate[dateKey] || [],
+            loading: false,
+            loaded: true,
+          };
+        });
+        return updated;
+      });
+
+      if (selectedDate && loadedDates.includes(selectedDate)) {
+        setSelectedDateData({
+          date: selectedDate,
+          tasks: tasksByDate[selectedDate] || [],
+          loading: false,
+          loaded: true,
+        });
+      }
+
+      if (pendingSelectedDate && loadedDates.includes(pendingSelectedDate)) {
+        setSelectedDateData({
+          date: pendingSelectedDate,
+          tasks: tasksByDate[pendingSelectedDate] || [],
+          loading: false,
+          loaded: true,
+        });
+      }
+    } catch (_error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to refresh loaded dates:', _error);
+    }
+  }, [
+    userId,
+    dateTasks,
+    pendingSelectedDate,
+    selectedDate,
+    setSelectedDateData,
+  ]);
+
+  useEffect(() => {
+    if (
+      refreshTrigger > 0 &&
+      refreshTrigger !== prevRefreshTriggerRef.current
+    ) {
+      refreshAllLoadedDates();
+      prevRefreshTriggerRef.current = refreshTrigger;
+    }
+  }, [refreshTrigger, refreshAllLoadedDates]);
 
   const isDateInLoadedRange = useCallback(
     (date: string) => dates.includes(date),
@@ -110,7 +239,7 @@ export const useHandleCalendarDates = (initialDate?: string) => {
       if (dates.length - visibleStopIndex <= CALENDAR_FETCH_THRESHOLD) {
         const lastDate = dates[dates.length - 1];
         const moreDates = getDateRange(
-          formatDateToYYYYMMDD(addDays(new Date(lastDate), 1)),
+          formatDateToYYYYMMDD(addDays(moment(lastDate).toDate(), 1)),
           CALENDAR_PAGE_SIZE,
         );
         setDates(prev => {
@@ -123,7 +252,7 @@ export const useHandleCalendarDates = (initialDate?: string) => {
         const firstDate = dates[0];
         const morePastDates = getDateRange(
           formatDateToYYYYMMDD(
-            addDays(new Date(firstDate), -CALENDAR_PAGE_SIZE),
+            addDays(moment(firstDate).toDate(), -CALENDAR_PAGE_SIZE),
           ),
           CALENDAR_PAGE_SIZE,
         );
@@ -159,22 +288,19 @@ export const useHandleCalendarDates = (initialDate?: string) => {
 
     if (!isDateInLoadedRange(pendingSelectedDate)) return;
 
-    const dateKey = pendingSelectedDate;
-    const { tasks, loading, loaded } = dateTasks[dateKey] || {};
+    const dateData = dateTasks[pendingSelectedDate];
 
-    if (loaded || loading) {
-      setSelectedDateData({
-        date: dateKey,
-        tasks,
-        loading,
-        loaded,
-      });
+    if (dateData?.loaded || dateData?.loading) {
+      updateContextWithDateData(pendingSelectedDate);
+    } else {
+      fetchTasksForDates([pendingSelectedDate]);
     }
   }, [
     pendingSelectedDate,
     dateTasks,
     isDateInLoadedRange,
-    setSelectedDateData,
+    updateContextWithDateData,
+    fetchTasksForDates,
   ]);
 
   return {
@@ -186,5 +312,7 @@ export const useHandleCalendarDates = (initialDate?: string) => {
     setScrollOffset,
     handleScroll,
     handleItemsRendered,
+    fetchTasksForDates,
+    refreshAllLoadedDates,
   };
 };

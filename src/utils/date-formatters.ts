@@ -1,38 +1,45 @@
+import moment from 'moment';
+
 export function addDays(date: Date, days: number): Date {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
+  return moment(date).add(days, 'days').toDate();
 }
 
 export function getDateRange(start: string, days: number): string[] {
   const arr = [];
-  let date = new Date(start);
+  const currentDate = moment(start);
+
   for (let i = 0; i < days; i++) {
-    arr.push(formatDateToYYYYMMDD(date));
-    date = addDays(date, 1);
+    arr.push(formatDateToYYYYMMDD(currentDate.toDate()));
+    currentDate.add(1, 'days');
   }
+
   return arr;
 }
 
 export function formatDisplayDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  const day = date.toLocaleDateString(undefined, { weekday: 'long' });
-  const dayNum = date.getDate();
-  const month = date.toLocaleDateString(undefined, { month: 'long' });
-  const year = date.getFullYear();
-
-  return `${day} ${dayNum} ${month} ${year}`;
+  const date = moment(dateStr);
+  return date.format('dddd D MMMM YYYY');
 }
 
 export const formatDateToYYYYMMDD = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return moment(date).format('YYYY-MM-DD');
 };
 
 export const formatTimeToHHMM = (date: Date): string => {
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  return `${hours}:${minutes}`;
+  return moment(date).format('HH:mm');
+};
+
+export const formatTime12Hour = (timeString: string): string => {
+  if (!timeString?.includes(':')) {
+    return timeString;
+  }
+
+  return moment(`2000-01-01T${timeString}`).format('h:mm A');
+};
+
+export const formatTimeRange = (startTime: string, endTime: string): string => {
+  const formattedStartTime = formatTime12Hour(startTime);
+  const formattedEndTime = formatTime12Hour(endTime);
+
+  return `${formattedStartTime} - ${formattedEndTime}`;
 };
