@@ -6,7 +6,12 @@ import { LayoutContainerWrapper } from './LayoutContainer.styled';
 const LayoutContainer: React.FC<
   React.PropsWithChildren<LayoutContainerProps>
 > = props => (
-  <LayoutContainerWrapper {...props}>{props.children}</LayoutContainerWrapper>
+  <LayoutContainerWrapper
+    data-testid="layout-container"
+    {...props}
+  >
+    {props.children}
+  </LayoutContainerWrapper>
 );
 
 export default LayoutContainer;

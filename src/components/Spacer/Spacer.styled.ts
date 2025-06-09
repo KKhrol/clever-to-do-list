@@ -8,19 +8,19 @@ export interface SpacerProps {
   height?: number | string;
 }
 
-export const SpacerComponent = styled(Box)<SpacerProps>(
-  ({ theme, size = 1, axis = 'vertical', $flex, height }) => ({
-    ...(axis === 'horizontal'
-      ? {
-          width: theme.spacing(size),
-          height: 1,
-        }
-      : {
-          width: 1,
-          height: height || theme.spacing(size),
-        }),
-    ...($flex && {
-      flex: 1,
-    }),
+export const SpacerComponent = styled(Box, {
+  shouldForwardProp: prop => !prop.toString().startsWith('$'),
+})<SpacerProps>(({ theme, size = 1, axis = 'vertical', $flex, height }) => ({
+  ...(axis === 'horizontal'
+    ? {
+        width: theme.spacing(size),
+        height: 1,
+      }
+    : {
+        width: 1,
+        height: height || theme.spacing(size),
+      }),
+  ...($flex && {
+    flex: 1,
   }),
-);
+}));
