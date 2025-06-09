@@ -73,9 +73,7 @@ export default defineConfig([
       'react-refresh/only-export-components': 'off',
 
       // General rules
-      'no-console': 'warn',
-
-      // Import rules
+      'no-console': 'warn', // Import rules
       'import/order': 'off', // Using Prettier import sort instead
       'import/newline-after-import': 'off', // Using Prettier instead
       'import/no-extraneous-dependencies': [
@@ -84,12 +82,17 @@ export default defineConfig([
           devDependencies: [
             'vite.config.ts',
             'vitest.config.ts',
+            'jest.config.ts',
             'test/**/*',
             'tests/**/*',
             '**/*.test.ts',
+            '**/*.test.tsx',
             '**/*.spec.ts',
+            '**/*.spec.tsx',
             '**/*.config.js',
             '**/*.config.ts',
+            'src/config/tests/testSetup.ts',
+            'src/config/tests/**/*Mock*',
           ],
           includeTypes: true,
           peerDependencies: true,

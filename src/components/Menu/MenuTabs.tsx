@@ -43,7 +43,6 @@ const MenuTabs: React.FC = () => {
   };
 
   const currentTabIndex = getCurrentTabIndex();
-
   return (
     <Tabs
       value={currentTabIndex === -1 ? 0 : currentTabIndex}
@@ -51,13 +50,16 @@ const MenuTabs: React.FC = () => {
       indicatorColor="primary"
       textColor="primary"
       aria-label="navigation tabs"
+      data-testid="menu-tabs"
     >
-      {menuItems.map(item => (
+      {menuItems.map((item, _index) => (
         <Tab
           key={item.path}
           icon={item.icon}
           label={item.label}
           iconPosition="start"
+          data-testid={`tab-${item.value}`}
+          aria-label={`${item.label} tab`}
         />
       ))}
     </Tabs>

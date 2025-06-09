@@ -15,10 +15,15 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ showMenu = false }) => (
-  <HeaderWrapper $justifyContent={showMenu ? 'space-between' : 'center'}>
-    <HeaderCenterContainer>
-      <HeaderIcon />
-      <HeaderTitle>{t('common:header.title')}</HeaderTitle>
+  <HeaderWrapper
+    $justifyContent={showMenu ? 'space-between' : 'center'}
+    data-testid="header-component"
+  >
+    <HeaderCenterContainer data-testid="header-center-container">
+      <HeaderIcon data-testid="header-icon" />
+      <HeaderTitle data-testid="header-title">
+        {t('common:header.title')}
+      </HeaderTitle>
     </HeaderCenterContainer>
     {showMenu && <Menu />}
   </HeaderWrapper>

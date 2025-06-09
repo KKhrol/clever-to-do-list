@@ -11,9 +11,8 @@ import {
 const NotFoundErrorPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
-
   return (
-    <ErrorContainer>
+    <ErrorContainer data-testid="not-found-page">
       <ErrorTitle>{t('errors.notFound.title')}</ErrorTitle>
       <ErrorMessage>{t('errors.notFound.message')}</ErrorMessage>
       <ErrorButton

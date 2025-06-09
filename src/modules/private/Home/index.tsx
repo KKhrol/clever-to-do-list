@@ -51,10 +51,12 @@ const Home = () => {
     },
     [user, triggerRefresh],
   );
-
   return (
     <CalendarProvider initialDate={today}>
-      <HomeContainer paddingHorizontal={PaddingHorizontal}>
+      <HomeContainer
+        paddingHorizontal={PaddingHorizontal}
+        data-testid="home-page"
+      >
         <HeaderContainer>
           <TitleWrapper>
             <StyledTitle>{t('homePage.title')}</StyledTitle>

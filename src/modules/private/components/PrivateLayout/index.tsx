@@ -10,9 +10,9 @@ interface PrivateLayoutProps {
 }
 
 const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => (
-  <LayoutContainer>
+  <LayoutContainer data-testid="private-layout">
     <Header showMenu />
-    <MainContent>{children}</MainContent>
+    <MainContent data-testid="private-layout-content">{children}</MainContent>
   </LayoutContainer>
 );
 

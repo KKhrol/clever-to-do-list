@@ -8,7 +8,9 @@ export interface LayoutContainerProps {
   $overflow?: React.CSSProperties['overflow'];
 }
 
-export const LayoutContainerWrapper = styled(Box)<LayoutContainerProps>(
+export const LayoutContainerWrapper = styled(Box, {
+  shouldForwardProp: prop => !prop.toString().startsWith('$'),
+})<LayoutContainerProps>(
   ({
     theme,
     $alignItems = 'center',

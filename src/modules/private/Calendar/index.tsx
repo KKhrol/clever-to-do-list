@@ -32,11 +32,13 @@ export const Calendar = () => {
 
   const itemSize = Math.floor(windowWidth / VisibleDaysCount);
   const today = formatDateToYYYYMMDD(moment().toDate());
-
   return (
     <CalendarRefreshProvider>
       <CalendarProvider initialDate={today}>
-        <CalendarContainer paddingHorizontal={PaddingHorizontal}>
+        <CalendarContainer
+          paddingHorizontal={PaddingHorizontal}
+          data-testid="calendar-page"
+        >
           <StyledTitle>{t('calendarPage.title')}</StyledTitle>
           <Spacer height={20} />
           <CalendarDates
